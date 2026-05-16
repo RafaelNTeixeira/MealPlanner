@@ -1,15 +1,41 @@
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+import data.MockData;
+import engine.GroceryEngine;
+import pantry.PantryTracker;
+import recipe.Recipe;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
-        }
+import java.util.Map;
+
+/**
+ * Entry point - wires all features together and runs a demo using MockData.
+ *
+ * Flow:
+ *   1. Load weekly plan and pantry stock from MockData.
+ *   2. Create the GroceryEngine with the weekly plan.
+ *   3. Print the full aisle-sorted grocery list (no pantry deduction).
+ *   4. Print the pantry stock.
+ *   5. Print the minimal shopping list (after pantry deduction).
+ */
+public class Main {
+
+    public static void main(String[] args) {
+
+        // 1. Load mock data
+        Map<Recipe, Integer> weeklyPlan = MockData.weeklyPlan();
+        PantryTracker pantry = new PantryTracker(MockData.pantryStock());
+
+        // 2. Create the engine
+        GroceryEngine engine = new GroceryEngine(weeklyPlan);
+
+        // 3. Full grocery list (all ingredients, aisle-sorted)
+        System.out.println();
+        engine.printGroceryList();
+
+        // 4. Current pantry state
+        System.out.println();
+        pantry.printStock();
+
+        // 5. Shopping list - only what still needs to be bought
+        System.out.println();
+        engine.printShoppingList(pantry);
     }
 }
